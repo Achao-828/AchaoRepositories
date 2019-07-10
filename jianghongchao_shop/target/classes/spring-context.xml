@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 扫描包，去除控制器 -->
+    <context:component-scan base-package="com.jianghongchao">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <!--与mybatis整合-->
+    <!--加载外界文件  -->
+    <context:property-placeholder location="classpath:db.properties"/>
+    
+    <!--与mybatis整合-->
+    <!--加载外界文件  -->
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName" value="${driverClass}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${user}"/>
+        <property name="password" value="${password}"/>
+    </bean>
+    <!-- 读取mybatis文件 -->
+    <!-- 配置SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    	 <!--mybatis和数据库连接   注入数据源  -->
+    	 <property name="dataSource" ref="dataSource"/>
+    	 <!--读取mybatis的总配置  -->
+    	 <property name="configLocation" value="classpath:mybatis-config.xml"/>
+    	  <!-- 类型别名扫描包-->
+    	  <property name="typeAliasesPackage" value="com.jianghongchao.entity"/>
+    	  <!--配置文件和接口分离  -->
+    	  <property name="mapperLocations" value="classpath:mapper/*Mapper.xml"/>
+    </bean>
+    
+    <!-- 配置接口-->
+    <!-- 代理dao层接口实现类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<!-- dao层接口包 -->
+    	<property name="basePackage" value="com.jianghongchao.dao"></property>
+    	 <!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+    	 <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+    </bean>
+  	
+	 <!-- 配置文件上传 <form enctype="multipart/form-data">-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="524288000"></property>
+		<property name="maxUploadSizePerFile" value="52428800"></property>
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean>
+
+  	<!-- 配置事务管理器 -->
+  	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+  		<property name="dataSource" ref="dataSource"></property>
+  	</bean>
+  	<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>	    
+
+
+

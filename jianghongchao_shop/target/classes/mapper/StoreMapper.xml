@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jianghongchao.dao.StoreDao">
+	<select id="getStores" resultMap="storeMap">
+		SELECT sid,sname,datestart FROM store 
+		<where>
+			<if test="sname != null">
+				sname like '%${sname}%'
+			</if>
+		</where>
+	</select>
+	<resultMap type="Store" id="storeMap">
+		<id property="sid" column="sid"/>
+		<result property="sname" column="sname"/>
+		<result property="datestart" column="datestart"/>
+		<collection property="phones" ofType="Phone" javaType="java.util.List" select="FindPhoneById" column="sid"></collection>
+	</resultMap>
+	<select id="FindPhoneById" resultType="Phone">
+		SELECT p.* FROM phone AS p INNER JOIN store_phone AS sp ON p.pid=sp.pid WHERE sp.sid=#{sid}
+	</select>
+	
+	<!-- 删除 --> 
+	<delete id="deleteStore" parameterType="Integer">
+		DELETE FROM store WHERE sid in 
+		<foreach collection="array" open="(" separator="," close=")" item="item">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<select id="getstore" resultMap="storeMap">
+		SELECT sid,sname,datestart FROM store where sid = #{id}
+	</select>
+	<!-- 新增 -->
+	<insert id="insertStore" parameterType="Store">
+		INSERT INTO store(sname,datestart) VALUES(#{sname},#{datestart});
+		<selectKey order="AFTER" keyProperty="sid" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID() AS sid
+		</selectKey>
+	</insert>
+</mapper>      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  

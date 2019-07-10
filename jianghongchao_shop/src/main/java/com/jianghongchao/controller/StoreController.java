@@ -23,7 +23,11 @@ import com.jianghongchao.entity.Store_Phone;
 import com.jianghongchao.service.PhoneSerice;
 import com.jianghongchao.service.StoreService;
 import com.jianghongchao.service.Store_PhoneService;
-
+/**
+ * 
+ * @author 阿超
+ *
+ */
 @Controller
 public class StoreController {
 	

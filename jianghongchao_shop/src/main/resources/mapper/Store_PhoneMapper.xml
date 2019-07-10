@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jianghongchao.dao.Store_PhoneDao">
+	<!-- 删除 -->
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM store_phone WHERE sid = #{ids}
+	</delete>
+	<insert id="insert" parameterType="Store_Phone">
+		INSERT INTO store_phone(sid,pid) VALUES(#{sid},#{pid});
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
